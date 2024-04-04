@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Widget loader test</title>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: darkslategrey;
+            color: #fff;
+        }
+    </style>
+    <script async src="loader.js" data-license="123" data-greeting="Hello!"></script>
+    <script src="widgetApi.js"></script>
+</head>
+
+<body>
+    <div style="padding:2em">
+        <p>Widget example page</p>
+    </div>
+
+    <div style="padding:2em">
+        <p>Widget example page</p>
+        <p>
+            <textarea id="message" rows="5" cols="30"></textarea>
+        <div>
+            <button type="button" id="send">Send</button>
+        </div>
+        </p>
+
+        <div>
+            <button type="button" id="hide" disabled>Hide</button>
+            <button type="button" id="show" disabled>Show</button>
+            <button type="button" id="toggle" disabled>Toggle</button>
+        </div>
+
+
+        <script>
+
+            (function () {
+
+                const content = document.getElementById("message");
+                const send = document.getElementById("send");
+                const hide = document.getElementById("hide");
+                const show = document.getElementById("show");
+                const toggle = document.getElementById("toggle");
+
+                const changeButtonsState = () => {
+                    show.disabled = !show.disabled;
+                    hide.disabled = !show.disabled;
+                }
+
+                widgetApi(800).then(api => {
+
+                    hide.disabled = false;
+                    toggle.disabled = false;
+
+                    send.addEventListener("click", () => {
+                        const value = content.value;
+                        if (value.length > 0) {
+                            api.sendMessage(value);
+                            content.value = "";
+                        }
+                    });
+
+                    api.onHide = () => changeButtonsState();
+
+                    hide.addEventListener("click", () => {
+                        api.hide();
+                    });
+
+                    show.addEventListener("click", () => {
+                        api.show();
+                    });
+
+                    hide.addEventListener("click", () => {
+                        changeButtonsState();
+                        api.hide();
+                    });
+
+                    show.addEventListener("click", () => {
+                        changeButtonsState();
+                        api.show();
+                    });
+
+                    toggle.addEventListener("click", () => {
+                        changeButtonsState();
+                        api.toggle();
+                    });
+
+
+                });
+
+
+
+            })();
+        </script>
+    </div>
+</body>
+
+</html>
